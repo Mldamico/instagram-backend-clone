@@ -1,13 +1,14 @@
 import { Response, Request } from 'express';
 import connection from '../db/connection';
+import Post from '../models/Post';
 
 export const getPosts = async (req: Request, res: Response) => {
   try {
-    connection.query('SELECT * FROM posts', function (err, results, fields) {
-      res.json({
-        ok: true,
-        results,
-      });
+    const results = await Post.getPosts();
+    console.log(results);
+    res.json({
+      ok: true,
+      results,
     });
   } catch (error) {
     res.status(400).json({
@@ -20,19 +21,14 @@ export const getPosts = async (req: Request, res: Response) => {
 export const createPost = async (req: Request, res: Response) => {
   const { title, text } = req.body;
   console.log(title, text);
-  // console.log(req.body);
-  console.log('entro');
+  const post = new Post(title, text);
+
   try {
-    connection.execute(
-      'INSERT INTO posts (title, text) VALUES (?, ?)',
-      [title, text],
-      function (err, results, fields) {
-        res.json({
-          ok: true,
-          post: { title, text },
-        });
-      }
-    );
+    await post.save();
+    res.json({
+      ok: true,
+      post,
+    });
   } catch (error) {
     res.status(400).json({
       ok: false,
