@@ -1,14 +1,18 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import postRoutes from '../routes/post';
+import userRoutes from '../routes/user';
+
 class Server {
   private app: Application;
   private port: string;
   private postRoutesPath: string;
+  private userRoutesPath: string;
   constructor() {
     this.app = express();
     this.port = process.env.PORT || '8080';
     this.postRoutesPath = '/api/post';
+    this.userRoutesPath = '/api/user';
 
     this.middlewares();
     this.routes();
@@ -21,6 +25,7 @@ class Server {
 
   routes() {
     this.app.use(this.postRoutesPath, postRoutes);
+    this.app.use(this.userRoutesPath, userRoutes);
   }
 
   start() {
