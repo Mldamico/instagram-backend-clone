@@ -25,6 +25,19 @@ class Post {
       this.text,
     ]);
   }
+
+  static update(id: number, title: string, text: string) {
+    return new Promise(function (resolve, reject) {
+      connection.execute(
+        'UPDATE posts SET title = ?, text = ? where idposts = ?',
+        [title, text, id],
+        function (err, results) {
+          if (err) return reject(err);
+          resolve(results);
+        }
+      );
+    });
+  }
 }
 
 export default Post;

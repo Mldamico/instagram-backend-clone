@@ -37,20 +37,17 @@ export const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export const updatePost = (req: Request, res: Response) => {
+export const updatePost = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, text } = req.body;
   try {
-    connection.execute(
-      'UPDATE posts SET title = ?, text = ? where idposts = ?',
-      [title, text, id],
-      function (err, results, fields) {
-        res.json({
-          ok: true,
-          post: { title, text },
-        });
-      }
-    );
+    const results = await Post.update(+id, title, text);
+    console.log(results);
+    res.json({
+      ok: true,
+      title,
+      text,
+    });
   } catch (error) {
     res.status(400).json({
       ok: false,
